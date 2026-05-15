@@ -1,8 +1,16 @@
 # dbportal
 
+[![Open Issues](https://img.shields.io/github/issues/Mananwebdev160408/dbportal?color=blue&style=flat-square)](https://github.com/Mananwebdev160408/dbportal/issues)
+[![Open PRs](https://img.shields.io/github/issues-pr/Mananwebdev160408/dbportal?color=orange&style=flat-square)](https://github.com/Mananwebdev160408/dbportal/pulls)
+[![Last Commit](https://img.shields.io/github/last-commit/Mananwebdev160408/dbportal?style=flat-square)](https://github.com/Mananwebdev160408/dbportal/commits/main)
+[![License](https://img.shields.io/github/license/Mananwebdev160408/dbportal?style=flat-square)](https://github.com/Mananwebdev160408/dbportal/blob/main/LICENSE)
+[![GSSoC 2026](https://img.shields.io/badge/GSSoC-2026-pink?style=flat-square)](https://gssoc.girlscript.tech/)
+
 `dbportal` is a local database explorer for developers who want one tool to inspect multiple databases, browse records, understand schema shape, and run read-only queries from a browser UI.
 
 It starts a local Express server, detects connections from `DATABASE_URL` and optional `DATABASE_URL_1` to `DATABASE_URL_10`, then opens a React dashboard for inspection and analysis.
+
+### 🗺️ [View the Project Roadmap (Kanban Board)](https://github.com/users/Mananwebdev160408/projects/2)
 
 ## What it does
 
@@ -192,6 +200,12 @@ npm run build
 - `frontend/` React UI source and build output
 - `bin/cli.js` executable launcher
 - `dist/` compiled package artifacts
+
+## Contributors
+
+<a href="https://github.com/Mananwebdev160408/dbportal/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Mananwebdev160408/dbportal" />
+</a>
 
 ## License
 

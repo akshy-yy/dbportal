@@ -1,0 +1,47 @@
+name: Feature Request
+description: Suggest a new feature or enhancement for dbportal
+title: "[FEAT]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have an idea for dbportal? We'd love to hear it!
+  - type: textarea
+    id: summary
+    attributes:
+      label: Feature Summary
+      description: A short, clear summary of the feature you are requesting.
+    validations:
+      required: true
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Problem / Motivation
+      description: What problem does this solve? Why is this feature needed?
+      placeholder: e.g. "As a user who has 50+ tables, I struggle to find a specific table quickly because..."
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Describe the feature you'd like to see. Be as specific as possible.
+    validations:
+      required: true
+  - type: checkboxes
+    id: areas
+    attributes:
+      label: Affected Areas
+      description: Which parts of the project will this change touch?
+      options:
+        - label: Frontend (React UI)
+        - label: Backend (Express API)
+        - label: Database Drivers
+        - label: CLI / Startup
+        - label: Documentation
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: Any other context, mockups, or links to similar features in other tools.

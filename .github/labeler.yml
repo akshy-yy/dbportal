@@ -1,0 +1,21 @@
+# Labeler configuration
+# https://github.com/actions/labeler
+
+frontend:
+  - changed-files:
+    - any-glob-to-any-file: 'frontend/**/*'
+
+backend:
+  - changed-files:
+    - any-glob-to-any-file: 'src/**/*'
+    - any-glob-to-any-file: 'drivers/**/*'
+
+documentation:
+  - changed-files:
+    - any-glob-to-any-file: '*.md'
+    - any-glob-to-any-file: 'SECURITY.md'
+    - any-glob-to-any-file: 'CONTRIBUTING.md'
+
+github-actions:
+  - changed-files:
+    - any-glob-to-any-file: '.github/workflows/**/*'

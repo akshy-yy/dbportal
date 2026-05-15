@@ -1,0 +1,19 @@
+name: Documentation Improvement
+description: Suggest or submit improvements to the documentation
+title: "[DOCS]: "
+labels: ["documentation"]
+body:
+  - type: textarea
+    id: current
+    attributes:
+      label: Current Documentation
+      description: Link to the current documentation or describe the area that needs improvement.
+    validations:
+      required: true
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Proposed Changes
+      description: What should be changed or added?
+    validations:
+      required: true

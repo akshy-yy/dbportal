@@ -34,5 +34,8 @@ jobs:
     - name: Run Lint (Type Check)
       run: npm run lint
       
+    - name: Run Format Check (Prettier)
+      run: npm run check-format
+      
     - name: Build Project
       run: npm run build

@@ -1,0 +1,46 @@
+name: Keyword Auto Labeler
+
+on:
+  issues:
+    types: [opened, edited]
+
+jobs:
+  label_issues:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Auto-label based on keywords
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const title = issue.title.toLowerCase();
+            const body = (issue.body || "").toLowerCase();
+            const content = title + " " + body;
+
+            const labelsToAdd = ["gssoc-2026"]; // Always add GSSoC label
+
+            const keywordMap = {
+              "frontend": ["ui", "frontend", "css", "react", "component", "style", "view"],
+              "backend": ["api", "backend", "express", "endpoint", "server", "route", "driver"],
+              "documentation": ["docs", "readme", "documentation", "guide", "contributing"],
+              "testing": ["test", "vitest", "unit test", "integration", "coverage"],
+              "bug": ["bug", "fix", "error", "crash", "fails", "unexpected"],
+              "enhancement": ["feat", "new feature", "enhancement", "add", "improve"]
+            };
+
+            for (const [label, keywords] of Object.entries(keywordMap)) {
+              if (keywords.some(keyword => content.includes(keyword))) {
+                labelsToAdd.push(label);
+              }
+            }
+
+            if (labelsToAdd.length > 0) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                labels: labelsToAdd
+              });
+            }

@@ -1,0 +1,15 @@
+# GitHub CODEOWNERS File
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# By default, @Mananwebdev160408 owns everything
+*       @Mananwebdev160408
+
+# Backend & Drivers
+/src/   @Mananwebdev160408
+/bin/   @Mananwebdev160408
+
+# Frontend
+/frontend/ @Mananwebdev160408
+
+# Workflows & Templates
+/.github/ @Mananwebdev160408

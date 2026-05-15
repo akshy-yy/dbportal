@@ -1,0 +1,46 @@
+name: Good First Issue
+description: A beginner-friendly task for GSSoC contributors
+title: "[GOOD FIRST ISSUE]: "
+labels: ["good-first-issue", "gssoc-2026"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template to create a new task for beginners.
+  - type: textarea
+    id: description
+    attributes:
+      label: Task Description
+      description: Describe the task in plain language. What needs to be done?
+    validations:
+      required: true
+  - type: textarea
+    id: guidance
+    attributes:
+      label: Step-by-Step Guidance
+      description: Provide specific instructions for a beginner to get started.
+      placeholder: |
+        1. Navigate to frontend/src/...
+        2. Modify the CSS in...
+        3. Verify by...
+  - type: dropdown
+    id: difficulty
+    attributes:
+      label: Difficulty Level
+      options:
+        - Level 1 (Beginner)
+        - Level 2 (Intermediate)
+        - Level 3 (Advanced)
+    validations:
+      required: true
+  - type: checkboxes
+    id: criteria
+    attributes:
+      label: Acceptance Criteria
+      options:
+        - label: Code follows project style conventions
+          required: true
+        - label: npm run lint passes with no errors
+          required: true
+        - label: Feature is verified with a live database connection
+          required: true
