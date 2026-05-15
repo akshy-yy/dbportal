@@ -88,6 +88,27 @@ PORT=3000
 
 Only `DATABASE_URL` is required. Additional numbered URLs are optional.
 
+## Screenshots
+
+### Overview Dashboard
+
+<p align="center">
+  <img src="assets/overview.png" width="900"/>
+</p>
+
+### Data Explorer
+
+<p align="center">
+  <img src="assets/data-explorer.png" width="900"/>
+</p>
+
+### Schema Visualizer
+
+<p align="center">
+  <img src="assets/schema-visualiser.png" width="900"/>
+</p>
+
+
 ## Installation
 
 ### Run with npx
