@@ -616,6 +616,12 @@ export default function QueryWorkbench({ dbId, dbType, tables, capabilities, onS
                 className="query-textarea query-textarea-lg"
                 value={pipelineText}
                 onChange={(event) => setPipelineText(event.target.value)}
+                onKeyDown={(e) => {
+                  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                    e.preventDefault();
+                    runQuery();
+                  }
+                }}
                 spellCheck={false}
               />
            </div>
@@ -682,6 +688,12 @@ export default function QueryWorkbench({ dbId, dbType, tables, capabilities, onS
               className="query-textarea query-textarea-lg"
               value={rawQuery}
               onChange={(event) => setRawQuery(event.target.value)}
+              onKeyDown={(e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                  e.preventDefault();
+                  runQuery();
+                }
+              }}
               spellCheck={false}
               placeholder={
                 dbType.toLowerCase().includes('mssql') || dbType.toLowerCase().includes('sqlserver')
