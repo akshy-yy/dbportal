@@ -37,22 +37,35 @@ const parseLimit = (value: unknown): number => {
 
 const isSqlDriver = (kind: string): boolean => {
   const value = kind.toLowerCase();
-  return value.includes('postgres') || value.includes('mysql') || value.includes('mssql') || value.includes('sqlserver') || value.includes('sqlite');
+  return (
+    value.includes("postgres") ||
+    value.includes("mysql") ||
+    value.includes("mssql") ||
+    value.includes("sqlserver") ||
+    value.includes("sqlite")
+  );
 };
 
-const isMongoDriver = (kind: string): boolean => kind.toLowerCase().includes('mongo');
+const isMongoDriver = (kind: string): boolean =>
+  kind.toLowerCase().includes("mongo");
 
 const isReadOnlySqlQuery = (query: string): boolean => {
-  const normalized = query.replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/--.*$/gm, ' ').trim().toLowerCase();
+  const normalized = query
+    .replace(/\/\*[\s\S]*?\*\//g, " ")
+    .replace(/--.*$/gm, " ")
+    .trim()
+    .toLowerCase();
 
   // Read-only entry points we allow in this app.
-  const startsReadOnly = /^(select|with|show|describe|desc|explain|pragma)\b/.test(normalized);
+  const startsReadOnly =
+    /^(select|with|show|describe|desc|explain|pragma)\b/.test(normalized);
   if (!startsReadOnly) {
     return false;
   }
 
   // Block known mutating/privileged statements even if hidden in CTEs.
-  const forbidden = /\b(insert|update|delete|drop|truncate|alter|create|replace|merge|grant|revoke|commit|rollback|savepoint|attach|detach)\b/;
+  const forbidden =
+    /\b(insert|update|delete|drop|truncate|alter|create|replace|merge|grant|revoke|commit|rollback|savepoint|attach|detach)\b/;
   return !forbidden.test(normalized);
 };
 
@@ -61,9 +74,9 @@ const hasMutatingMongoStages = (pipeline: unknown): boolean => {
     return false;
   }
 
-  const blockedStages = new Set(['$out', '$merge']);
+  const blockedStages = new Set(["$out", "$merge"]);
   for (const stage of pipeline) {
-    if (!stage || typeof stage !== 'object' || Array.isArray(stage)) {
+    if (!stage || typeof stage !== "object" || Array.isArray(stage)) {
       continue;
     }
 
@@ -109,7 +122,8 @@ const listenOnAvailablePort = async (
         const address = activeServer.address();
         resolve({
           server: activeServer,
-          port: typeof address === "object" && address !== null ? address.port : 0,
+          port:
+            typeof address === "object" && address !== null ? address.port : 0,
         });
       });
       activeServer.once("error", reject);
@@ -241,14 +255,18 @@ const main = async () => {
     }
   });
 
-  app.get('/api/data/:name', async (request, response) => {
-    const dbId = String(request.query.dbId || 'primary');
+  app.get("/api/data/:name", async (request, response) => {
+    const dbId = String(request.query.dbId || "primary");
     const { name } = request.params;
     const limit = parseLimit(request.query.limit);
-    const offset = Number.parseInt(String(request.query.offset || '0'), 10);
-    const sortBy = request.query.sortBy ? String(request.query.sortBy) : undefined;
-    const sortOrder = (request.query.sortOrder === 'desc' ? 'desc' : 'asc') as 'asc' | 'desc';
-    
+    const offset = Number.parseInt(String(request.query.offset || "0"), 10);
+    const sortBy = request.query.sortBy
+      ? String(request.query.sortBy)
+      : undefined;
+    const sortOrder = (request.query.sortOrder === "desc" ? "desc" : "asc") as
+      | "asc"
+      | "desc";
+
     let filters: Record<string, string> = {};
     if (request.query.filters) {
       try {
@@ -260,15 +278,22 @@ const main = async () => {
 
     try {
       const conn = manager.getConnection(dbId);
-      const data = await conn.getTableData(name, limit, offset, sortBy, sortOrder, filters);
-      response.status(200).json({ 
-        name, 
-        limit, 
+      const data = await conn.getTableData(
+        name,
+        limit,
         offset,
         sortBy,
         sortOrder,
         filters,
-        data 
+      );
+      response.status(200).json({
+        name,
+        limit,
+        offset,
+        sortBy,
+        sortOrder,
+        filters,
+        data,
       });
     } catch (error) {
       response.status(500).json({ error: toMessage(error) });
@@ -289,20 +314,27 @@ const main = async () => {
       const conn = manager.getConnection(dbId);
       const dbKind = conn.getKind();
 
-      if (typeof query === 'string') {
+      if (typeof query === "string") {
         if (!isSqlDriver(dbKind)) {
-          response.status(400).json({ error: 'String queries are only supported for SQL drivers.' });
+          response.status(400).json({
+            error: "String queries are only supported for SQL drivers.",
+          });
           return;
         }
 
         if (!isReadOnlySqlQuery(query)) {
-          response.status(403).json({ error: 'Only read-only SQL statements are allowed in this build.' });
+          response.status(403).json({
+            error: "Only read-only SQL statements are allowed in this build.",
+          });
           return;
         }
       } else if (isMongoDriver(dbKind)) {
         const mongoQuery = query as { pipeline?: unknown };
         if (hasMutatingMongoStages(mongoQuery.pipeline)) {
-          response.status(403).json({ error: 'MongoDB write pipeline stages are disabled. Remove $out/$merge.' });
+          response.status(403).json({
+            error:
+              "MongoDB write pipeline stages are disabled. Remove $out/$merge.",
+          });
           return;
         }
       }
