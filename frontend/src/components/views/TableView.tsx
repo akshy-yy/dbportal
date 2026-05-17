@@ -81,15 +81,8 @@ export default function TableView({
       <div className="table-view-container">
         <div style={{ display: "flex", justifyContent: "flex-end", padding: "0.5rem 1rem" }}>
           <button
+            className="export-csv-btn"
             onClick={() => exportCSV(rows, columns)}
-            style={{
-              padding: "0.4rem 1rem",
-              cursor: "pointer",
-              borderRadius: "6px",
-              border: "1px solid currentColor",
-              background: "transparent",
-              fontSize: "0.85rem",
-            }}
           >
             Export CSV ↓
           </button>

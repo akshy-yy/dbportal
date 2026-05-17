@@ -2708,3 +2708,22 @@ select {
     grid-template-columns: 1fr;
   }
 }
+
+.retry-btn {
+  margin-top: 1rem;
+  padding: 0.5rem 1.5rem;
+  cursor: pointer;
+  border-radius: 6px;
+  border: 1px solid currentColor;
+  background: transparent;
+  font-size: 0.9rem;
+}
+
+.export-csv-btn {
+  padding: 0.4rem 1rem;
+  cursor: pointer;
+  border-radius: 6px;
+  border: 1px solid currentColor;
+  background: transparent;
+  font-size: 0.85rem;
+}

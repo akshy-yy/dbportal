@@ -307,19 +307,19 @@ export default function App() {
       );
     }
 
-if (error) {
-  return (
-    <EmptyState onRetry={handleReload}>
-      <p style={{ fontSize: "2rem" }}>⚠️</p>
-      <p className="error-msg">
-        Failed to connect to the backend.
-      </p>
-      <p style={{ opacity: 0.6, fontSize: "0.85rem" }}>
-        {error}
-      </p>
-    </EmptyState>
-  );
-}
+    if (error) {
+      return (
+        <EmptyState onRetry={handleReload}>
+          <p style={{ fontSize: "2rem" }}>⚠️</p>
+          <p className="error-msg">
+            Failed to connect to the backend.
+          </p>
+          <p style={{ opacity: 0.6, fontSize: "0.85rem" }}>
+            {error}
+          </p>
+        </EmptyState>
+      );
+    }
 
     if (appMode === "overview" && overview) {
       const activeDbData =
