@@ -96,26 +96,45 @@ PORT=3000
 
 Only `DATABASE_URL` is required. Additional numbered URLs are optional.
 
-## Screenshots
+## 📸 Application Screenshots
 
-### Overview Dashboard
+<div align="center">
 
-<p align="center">
-  <img src="assets/overview.png" width="900"/>
-</p>
+### Overview Dashboard — Summary Analytics
 
-### Data Explorer
+![Overview Dashboard](assets/overview_1.png)
 
-<p align="center">
-  <img src="assets/data-explorer.png" width="900"/>
-</p>
+---
 
-### Schema Visualizer
+### Overview Dashboard — Database Insights
 
-<p align="center">
-  <img src="assets/schema-visualiser.png" width="900"/>
-</p>
+![Overview Insights](assets/overview_2.png)
 
+---
+
+### Schema Visualiser
+
+![Schema Visualiser](assets/schema-visualiser.png)
+
+---
+
+### Table View
+
+![Table View](assets/table_view.png)
+
+---
+
+### Card View
+
+![Card View](assets/card_view.png)
+
+---
+
+### Inspector View
+
+![Inspector View](assets/inspector_view.png)
+
+</div>
 
 ## Installation
 
