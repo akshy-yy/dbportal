@@ -115,10 +115,10 @@ export default function Sidebar({
   onTableClick,
   onDbChange,
 }: SidebarProps) {
-  const [tableFilter, setTableFilter] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const filteredTables = tables.filter((t) =>
-    t.toLowerCase().includes(tableFilter.toLowerCase()),
+    t.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   return (
@@ -141,6 +141,17 @@ export default function Sidebar({
       </div>
 
       <div className="sidebar-scroll">
+        <div className="sidebar-search">
+          <input
+            type="text"
+            placeholder="Search tables / collections..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="sidebar-search-input"
+            aria-label="Filter tables"
+          />
+        </div>
+
         <div className="db-selector-wrapper">
           <div className="section-label">Active Connection</div>
           <div className="db-connection-list">
@@ -206,20 +217,10 @@ export default function Sidebar({
             <span className="count-badge">{tables.length}</span>
           </div>
 
-          <div className="sidebar-search">
-            <input
-              type="text"
-              placeholder="Filter objects..."
-              value={tableFilter}
-              onChange={(e) => setTableFilter(e.target.value)}
-              className="sidebar-search-input"
-            />
-          </div>
-
           <div className="table-list">
             {filteredTables.length === 0 && (
               <div className="list-empty-state">
-                {tableFilter ? "No matches" : "No tables detected"}
+                {searchQuery ? "No matches" : "No tables detected"}
               </div>
             )}
             {filteredTables.map((name) => (
