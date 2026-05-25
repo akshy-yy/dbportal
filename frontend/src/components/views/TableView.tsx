@@ -12,8 +12,7 @@ const exportCSV = (rows: Record<string, unknown>[], columns: string[]) => {
     columns
       .map((col) => {
         const val = row[col] ?? "";
-        const str =
-          typeof val === "object" ? JSON.stringify(val) : String(val);
+        const str = typeof val === "object" ? JSON.stringify(val) : String(val);
         return `"${str.replace(/"/g, '""')}"`;
       })
       .join(","),
@@ -145,7 +144,7 @@ export default function TableView({
         className="table-responsive-wrapper"
         style={{ minWidth: "100%", width: "max-content" }}
       >
-        <table className="data-table">
+        <table className="data-table" style={{ tableLayout: "fixed" }}>
           <thead>
             <tr>
               <th style={{ width: "60px" }}>#_ID</th>
@@ -249,10 +248,7 @@ export default function TableView({
                         className="json-cell"
                         title={titleText}
                         onClick={() =>
-                          console.log(
-                            `[dbportal] Row ${rowIdx} — ${col}:`,
-                            val,
-                          )
+                          console.log(`[dbportal] Row ${rowIdx} — ${col}:`, val)
                         }
                       >
                         <code
@@ -268,7 +264,14 @@ export default function TableView({
                       ? "*****"
                       : String(val);
                   return (
-                    <td key={col} title={maskSensitive && isSensitiveColumn(col) ? "Masked" : String(val)}>
+                    <td
+                      key={col}
+                      title={
+                        maskSensitive && isSensitiveColumn(col)
+                          ? "Masked"
+                          : String(val)
+                      }
+                    >
                       {displayVal}
                     </td>
                   );

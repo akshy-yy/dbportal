@@ -296,9 +296,9 @@ export default function App() {
       : data;
 
   const renderContent = () => {
-   if (loading) {
+    if (loading) {
       if (appMode === "table") {
-        return <SkeletonTableLoader rows={8} columns={5} />
+        return <SkeletonTableLoader rows={8} columns={5} />;
       }
       return (
         <EmptyState>
@@ -316,12 +316,8 @@ export default function App() {
       return (
         <EmptyState onRetry={handleReload}>
           <p style={{ fontSize: "2rem" }}>⚠️</p>
-          <p className="error-msg">
-            Failed to connect to the backend.
-          </p>
-          <p style={{ opacity: 0.6, fontSize: "0.85rem" }}>
-            {error}
-          </p>
+          <p className="error-msg">Failed to connect to the backend.</p>
+          <p style={{ opacity: 0.6, fontSize: "0.85rem" }}>{error}</p>
         </EmptyState>
       );
     }
@@ -398,12 +394,21 @@ export default function App() {
     );
   };
 
+  const activeDbData = overview?.databases?.find((db) => db.id === activeDbId);
+  const tableCounts: Record<string, number> = {};
+  if (activeDbData?.tables) {
+    for (const t of activeDbData.tables) {
+      tableCounts[t.name] = t.count;
+    }
+  }
+
   return (
     <div className="app-layout">
       <Sidebar
         connections={connections}
         activeDbId={activeDbId}
         tables={tables}
+        tableCounts={tableCounts}
         activeTable={currentTable}
         appMode={appMode}
         capabilities={capabilities}
