@@ -149,11 +149,15 @@ export default function TableView({
       </div>
       <div
         className="table-responsive-wrapper"
-        style={{ minWidth: "100%", width: "max-content" }}
+        style={{ width: "100%", overflowX: "auto" }}
       >
         <table
           className="data-table"
-          style={{ tableLayout: "fixed", width: `${totalTableWidth}px` }}
+          style={{
+            tableLayout: "fixed",
+            width: `${totalTableWidth}px`,
+            minWidth: "100%",
+          }}
         >
           <thead>
             <tr>
