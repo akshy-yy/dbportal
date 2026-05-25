@@ -84,6 +84,7 @@ export default function App() {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [filters, setFilters] = useState<Record<string, string>>({});
   const [schemaReloadKey, setSchemaReloadKey] = useState(0);
+  const [maskSensitive, setMaskSensitive] = useState(false);
 
   // Apply theme & mode to <body>
   useEffect(() => {
@@ -344,6 +345,7 @@ export default function App() {
       return (
         <TableView
           rows={data}
+          maskSensitive={maskSensitive}
           sortBy={sortBy}
           sortOrder={sortOrder}
           filters={filters}
@@ -437,6 +439,8 @@ export default function App() {
           onViewChange={setViewMode}
           onSearchChange={setSearch}
           onReload={handleReload}
+          maskSensitive={maskSensitive}
+          onMaskToggle={() => setMaskSensitive((v) => !v)}
         />
         <div className="data-container">{renderContent()}</div>
       </main>

@@ -1,6 +1,11 @@
 import { useState } from "react";
 import EmptyState from "../EmptyState";
 
+const SENSITIVE_KEYS = ["password", "token", "secret"];
+
+const isSensitiveColumn = (col: string): boolean =>
+  SENSITIVE_KEYS.some((k) => col.toLowerCase().includes(k));
+
 const exportCSV = (rows: Record<string, unknown>[], columns: string[]) => {
   const header = columns.join(",");
   const csvRows = rows.map((row) =>
@@ -32,6 +37,7 @@ interface TableViewProps {
   filters?: Record<string, string>;
   onSort?: (col: string) => void;
   onFilterChange?: (filters: Record<string, string>) => void;
+  maskSensitive?: boolean;
 }
 
 const escapeHtml = (value: unknown): string => {
@@ -50,6 +56,7 @@ export default function TableView({
   filters = {},
   onSort,
   onFilterChange,
+  maskSensitive = false,
 }: TableViewProps) {
   const [localFilters, setLocalFilters] =
     useState<Record<string, string>>(filters);
@@ -185,9 +192,13 @@ export default function TableView({
                       </td>
                     );
                   }
+                  const displayVal =
+                    maskSensitive && isSensitiveColumn(col)
+                      ? "*****"
+                      : String(val);
                   return (
-                    <td key={col} title={String(val)}>
-                      {String(val)}
+                    <td key={col} title={maskSensitive && isSensitiveColumn(col) ? "Masked" : String(val)}>
+                      {displayVal}
                     </td>
                   );
                 })}
