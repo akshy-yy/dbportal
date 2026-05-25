@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import net from "node:net";
 import dotenv from "dotenv";
 import express from "express";
+import { rateLimit } from "express-rate-limit";
 import open from "open";
 import { DatabaseManager } from "./index.js";
 
@@ -126,7 +127,7 @@ const isMongoDriver = (kind: string): boolean =>
 
 const isReadOnlySqlQuery = (query: string): boolean => {
   const normalized = query
-    .replace(/\/\*[\s\S]*?\*\//g, " ")
+    .replace(/\/\*[^*]*\*+(?:[^/*][^*]*\*+)*\//g, " ")
     .replace(/--.*$/gm, " ")
     .trim()
     .toLowerCase();
@@ -258,6 +259,15 @@ const main = async () => {
 
   const app = express();
   app.use(express.json({ limit: "1mb" }));
+
+  const limiter = rateLimit({
+    windowMs: 60 * 1000,
+    limit: 100,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: "Too many requests, please try again later." },
+  });
+  app.use("/api", limiter);
 
   // Serve the built React app
   app.use(express.static(frontendDist));
