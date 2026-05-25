@@ -17,6 +17,8 @@ interface ToolbarProps {
   onViewChange: (v: ViewMode) => void;
   onSearchChange: (v: string) => void;
   onReload: () => void;
+  maskSensitive: boolean;
+  onMaskToggle: () => void;
 }
 
 const SearchIcon = () => (
@@ -218,6 +220,8 @@ export default function Toolbar({
   onViewChange,
   onSearchChange,
   onReload,
+  maskSensitive,
+  onMaskToggle,
 }: ToolbarProps) {
   const [isViewOpen, setIsViewOpen] = useState(false);
   const [isThemeOpen, setIsThemeOpen] = useState(false);
@@ -408,6 +412,25 @@ export default function Toolbar({
           }}
         >
           {mode === "dark" ? <SunIcon /> : <MoonIcon />}
+        </button>
+
+        <button
+          className={`icon-btn mask-toggle-btn${maskSensitive ? " active" : ""}`}
+          onClick={onMaskToggle}
+          type="button"
+          aria-label="Toggle sensitive data masking"
+          title={maskSensitive ? "Show sensitive values" : "Hide sensitive values (password, token, secret)"}
+          style={{
+            height: 36,
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            padding: "0 12px",
+            fontSize: 12,
+            fontWeight: 600,
+          }}
+        >
+          {maskSensitive ? "🔓 Reveal" : "🔒 Mask"}
         </button>
 
         <button

@@ -159,6 +159,7 @@ export default function QueryWorkbench({
   const [resultRows, setResultRows] = useState<Record<string, unknown>[]>([]);
   const [telemetry, setTelemetry] = useState<QueryTelemetry | null>(null);
   const [running, setRunning] = useState(false);
+  const [copied, setCopied] = useState(false);
   const [runError, setRunError] = useState("");
   const historyKey = `${HISTORY_KEY_PREFIX}:${dbType}:${dbId}`;
   const [history, setHistory] = useState<QueryHistoryEntry[]>(() => {
@@ -392,7 +393,7 @@ export default function QueryWorkbench({
     persistHistory(next);
   };
 
-  const runRawQuery = async () => {
+ const runRawQuery = async () => {
     if (!supportsRaw) {
       throw new Error("Raw query is not supported by this driver.");
     }
@@ -402,6 +403,7 @@ export default function QueryWorkbench({
       throw new Error("Query cannot be empty.");
     }
 
+    const startTime = performance.now();
     const res = await fetch(`/api/query?dbId=${dbId}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -413,7 +415,9 @@ export default function QueryWorkbench({
       throw new Error(payload.error || "Query execution failed.");
     }
 
-    addHistory("raw", query);
+   addHistory("raw", query);
+    const executionTimeMs = Math.round(performance.now() - startTime);
+    setTelemetry({ executionTimeMs, affectedRows: payload.data?.length ?? 0 });
     return payload.data as Record<string, unknown>[];
   };
 
@@ -460,14 +464,16 @@ export default function QueryWorkbench({
         rows = await runStructuredQuery();
       } else {
         const query = rawQuery.trim();
+        const startTime = performance.now();
         const res = await fetch(`/api/query?dbId=${dbId}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ query }),
         });
         const payload = await res.json();
-        if (!res.ok) throw new Error(payload.error || "Query failed");
-        setTelemetry(payload.telemetry);
+      if (!res.ok) throw new Error(payload.error || "Query failed");
+        const executionTimeMs = Math.round(performance.now() - startTime);
+        setTelemetry(payload.telemetry ?? { executionTimeMs, affectedRows: payload.data?.length ?? 0 });
         rows = payload.data;
         addHistory("raw", query);
       }
@@ -515,6 +521,14 @@ export default function QueryWorkbench({
     setLimitText("100");
     setRunError("");
     onStatus("Query editor reset", false);
+  };
+
+  const copyResults = async () => {
+    if (resultRows.length === 0) return;
+    const text = JSON.stringify(resultRows, null, 2);
+    await navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   const applyRawExample = (sql: string) => {
@@ -838,6 +852,16 @@ export default function QueryWorkbench({
             >
               JSON
             </button>
+            {resultRows.length > 0 && (
+    <button
+    type="button"
+    className="result-tab"
+    onClick={copyResults}
+    title="Copy results to clipboard"
+  >
+    {copied ? "✅ Copied!" : "📋 Copy"}
+  </button>
+)}
           </div>
         </div>
 

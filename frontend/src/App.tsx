@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import Sidebar from "./components/Sidebar";
 import Toolbar from "./components/Toolbar";
 import EmptyState from "./components/EmptyState";
+import SkeletonTableLoader from "./components/SkeletonTableLoader";
 import OverviewView from "./components/views/OverviewView";
 import TableView from "./components/views/TableView";
 import DocumentsView from "./components/views/DocumentsView";
@@ -84,6 +85,7 @@ export default function App() {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [filters, setFilters] = useState<Record<string, string>>({});
   const [schemaReloadKey, setSchemaReloadKey] = useState(0);
+  const [maskSensitive, setMaskSensitive] = useState(false);
 
   // Apply theme & mode to <body>
   useEffect(() => {
@@ -294,7 +296,10 @@ export default function App() {
       : data;
 
   const renderContent = () => {
-    if (loading) {
+   if (loading) {
+      if (appMode === "table") {
+        return <SkeletonTableLoader rows={8} columns={5} />
+      }
       return (
         <EmptyState>
           <div className="loading-pulse" />
@@ -344,6 +349,7 @@ export default function App() {
       return (
         <TableView
           rows={data}
+          maskSensitive={maskSensitive}
           sortBy={sortBy}
           sortOrder={sortOrder}
           filters={filters}
@@ -437,6 +443,8 @@ export default function App() {
           onViewChange={setViewMode}
           onSearchChange={setSearch}
           onReload={handleReload}
+          maskSensitive={maskSensitive}
+          onMaskToggle={() => setMaskSensitive((v) => !v)}
         />
         <div className="data-container">{renderContent()}</div>
       </main>
