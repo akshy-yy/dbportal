@@ -124,6 +124,13 @@ export default function TableView({
     [colWidths],
   );
 
+  const totalTableWidth =
+    60 +
+    columns.reduce(
+      (sum, col) => sum + (colWidths[col] ?? DEFAULT_COL_WIDTH),
+      0,
+    );
+
   return (
     <div className="table-view-container">
       <div
@@ -144,7 +151,10 @@ export default function TableView({
         className="table-responsive-wrapper"
         style={{ minWidth: "100%", width: "max-content" }}
       >
-        <table className="data-table" style={{ tableLayout: "fixed" }}>
+        <table
+          className="data-table"
+          style={{ tableLayout: "fixed", width: `${totalTableWidth}px` }}
+        >
           <thead>
             <tr>
               <th style={{ width: "60px" }}>#_ID</th>
