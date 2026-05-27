@@ -87,7 +87,7 @@ export default function App() {
   const [schemaReloadKey, setSchemaReloadKey] = useState(0);
   const [maskSensitive, setMaskSensitive] = useState(false);
   const [page, setPage] = useState(0);
-  const [pageSize] = useState(200);
+  const [pageSize, setPageSize] = useState(200);
   const [hasNextPage, setHasNextPage] = useState(false);
 
   // Apply theme & mode to <body>
@@ -203,7 +203,8 @@ export default function App() {
     setLoading(true);
     try {
       await loadDatabaseMetadata(dbId);
-      setAppMode("overview"); // Or keep current? Usually switch DB implies seeing what's in it
+      // Preserve query/schema mode; only reset to overview when leaving a specific table
+      setAppMode((prev) => (prev === "table" ? "overview" : prev));
       showStatus(`Switched to ${dbId}`);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Unknown error";
@@ -299,6 +300,14 @@ export default function App() {
       loadTable(currentTable, activeDbId, sortBy, sortOrder, filters, 0);
     } else if (appMode === "schema") {
       setSchemaReloadKey((k) => k + 1);
+    }
+  };
+
+  const handleLimitChange = (newLimit: number) => {
+    setPageSize(newLimit);
+    setPage(0);
+    if (appMode === "table" && currentTable) {
+      loadTable(currentTable, activeDbId, sortBy, sortOrder, filters, 0);
     }
   };
 
@@ -486,6 +495,8 @@ export default function App() {
           onReload={handleReload}
           maskSensitive={maskSensitive}
           onMaskToggle={() => setMaskSensitive((v) => !v)}
+          rowLimit={pageSize}
+          onLimitChange={handleLimitChange}
         />
         <div className="data-container">{renderContent()}</div>
       </main>

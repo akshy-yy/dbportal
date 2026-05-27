@@ -19,6 +19,8 @@ interface ToolbarProps {
   onReload: () => void;
   maskSensitive: boolean;
   onMaskToggle: () => void;
+  rowLimit?: number;
+  onLimitChange?: (limit: number) => void;
 }
 
 const SearchIcon = () => (
@@ -222,6 +224,8 @@ export default function Toolbar({
   onReload,
   maskSensitive,
   onMaskToggle,
+  rowLimit = 200,
+  onLimitChange,
 }: ToolbarProps) {
   const [isViewOpen, setIsViewOpen] = useState(false);
   const [isThemeOpen, setIsThemeOpen] = useState(false);
@@ -419,7 +423,11 @@ export default function Toolbar({
           onClick={onMaskToggle}
           type="button"
           aria-label="Toggle sensitive data masking"
-          title={maskSensitive ? "Show sensitive values" : "Hide sensitive values (password, token, secret)"}
+          title={
+            maskSensitive
+              ? "Show sensitive values"
+              : "Hide sensitive values (password, token, secret)"
+          }
           style={{
             height: 36,
             display: "flex",
@@ -432,6 +440,51 @@ export default function Toolbar({
         >
           {maskSensitive ? "🔓 Reveal" : "🔒 Mask"}
         </button>
+
+        {/* Rows-per-page selector — visible only in table mode */}
+        {!viewDisabled && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              padding: "0 4px",
+            }}
+          >
+            <label
+              htmlFor="row-limit"
+              style={{
+                fontSize: 11,
+                fontWeight: 600,
+                color: "var(--text-dim)",
+                whiteSpace: "nowrap",
+              }}
+            >
+              Rows:
+            </label>
+            <select
+              id="row-limit"
+              value={rowLimit}
+              onChange={(e) => onLimitChange?.(Number(e.target.value))}
+              style={{
+                background: "var(--surface)",
+                color: "var(--text)",
+                border: "1px solid var(--border)",
+                borderRadius: 4,
+                padding: "2px 6px",
+                fontSize: 12,
+                fontFamily: "var(--font-mono)",
+                cursor: "pointer",
+                height: 28,
+              }}
+            >
+              <option value={50}>50</option>
+              <option value={100}>100</option>
+              <option value={200}>200</option>
+              <option value={500}>500</option>
+            </select>
+          </div>
+        )}
 
         <button
           className="reload-btn"
