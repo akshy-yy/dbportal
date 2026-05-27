@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import EmptyState from "../EmptyState";
 
 const SENSITIVE_KEYS = ["password", "token", "secret"];
@@ -76,6 +76,19 @@ export default function TableView({
     startX: number;
     startWidth: number;
   } | null>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const [containerWidth, setContainerWidth] = useState<number>(0);
+
+  useEffect(() => {
+    if (!wrapperRef.current) return;
+    const observer = new ResizeObserver((entries) => {
+      if (entries[0]) {
+        setContainerWidth(entries[0].contentRect.width);
+      }
+    });
+    observer.observe(wrapperRef.current);
+    return () => observer.disconnect();
+  }, []);
 
   if (!rows.length) {
     return (
@@ -132,22 +145,43 @@ export default function TableView({
     [colWidths],
   );
 
-  const totalTableWidth =
+  const totalRawWidth =
     60 +
     columns.reduce(
       (sum, col) => sum + (colWidths[col] ?? DEFAULT_COL_WIDTH),
       0,
     );
 
+  const shouldScale = containerWidth > 0 && totalRawWidth < containerWidth;
+  const scaleFactor = shouldScale ? containerWidth / totalRawWidth : 1;
+
+  const idColWidth = 60 * scaleFactor;
+  const getColWidth = (col: string) => {
+    const raw = colWidths[col] ?? DEFAULT_COL_WIDTH;
+    return raw * scaleFactor;
+  };
+
   return (
     <div className="table-view-container">
       <div
         style={{
           display: "flex",
-          justifyContent: "flex-end",
+          justifyContent: "space-between",
+          alignItems: "center",
           padding: "0.5rem 1rem",
         }}
       >
+        {rows.length > 0 ? (
+          <span style={{ color: "var(--text-dim)", fontSize: "0.85rem" }}>
+            Page <strong style={{ color: "var(--text)" }}>{page + 1}</strong>
+            &nbsp;·&nbsp; Rows{" "}
+            <strong style={{ color: "var(--text)" }}>
+              {page * pageSize + 1}–{page * pageSize + rows.length}
+            </strong>
+          </span>
+        ) : (
+          <span />
+        )}
         <button
           className="export-csv-btn"
           onClick={() => exportCSV(rows, columns)}
@@ -157,19 +191,20 @@ export default function TableView({
       </div>
       <div
         className="table-responsive-wrapper"
+        ref={wrapperRef}
         style={{ width: "100%", overflowX: "auto" }}
       >
         <table
           className="data-table"
           style={{
             tableLayout: "fixed",
-            width: `${totalTableWidth}px`,
+            width: shouldScale ? "100%" : `${totalRawWidth}px`,
             minWidth: "100%",
           }}
         >
           <thead>
             <tr>
-              <th style={{ width: "60px" }}>#_ID</th>
+              <th style={{ width: `${idColWidth}px` }}>#_ID</th>
               {columns.map((col) => (
                 <th
                   key={col}
@@ -177,7 +212,7 @@ export default function TableView({
                   onClick={() => onSort?.(col)}
                   style={{
                     cursor: "pointer",
-                    width: `${colWidths[col] ?? DEFAULT_COL_WIDTH}px`,
+                    width: `${getColWidth(col)}px`,
                     minWidth: `${MIN_COL_WIDTH}px`,
                     position: "relative",
                     userSelect: "none",
@@ -193,17 +228,8 @@ export default function TableView({
                   </div>
                   {/* Resize handle */}
                   <span
+                    className="col-resize-handle"
                     onMouseDown={(e) => handleMouseDown(e, col)}
-                    style={{
-                      position: "absolute",
-                      right: 0,
-                      top: 0,
-                      height: "100%",
-                      width: "6px",
-                      cursor: "col-resize",
-                      background: "transparent",
-                      zIndex: 1,
-                    }}
                     title="Drag to resize"
                   />
                 </th>
